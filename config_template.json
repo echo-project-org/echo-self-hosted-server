@@ -1,0 +1,5 @@
+{
+    "env": "dev",
+    "log": "verbose",
+    "port": "6980"
+}
