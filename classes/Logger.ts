@@ -98,6 +98,12 @@ class Logger {
     }
 
     private formatLogArguments(args: string[]) {
+        var stackInfo = this.getStackInfo(1);
+        if (stackInfo) {
+            args.unshift(`[${stackInfo.file}:${stackInfo.line}:${stackInfo.pos}]`);
+        } else {
+            args.unshift("[Unknown location]");
+        }
         return [args.join(" ")];
     }
 }
