@@ -19,7 +19,11 @@ router.get("/", (req, res) => {
                 room.bannerImg = Buffer.from(room.bannerImg).toString('base64');
             }
         }
-        res.json(rooms);
+        if(!rooms || rooms.length === 0) {
+            res.status(204).send("No rooms found");
+        } else {
+            res.json(rooms);
+        }
     } catch (error) {
         console.error("Error fetching rooms:", error);
         res.status(500).send("Internal Server Error");
