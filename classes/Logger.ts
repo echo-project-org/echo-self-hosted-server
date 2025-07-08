@@ -97,23 +97,8 @@ class Logger {
         }
     }
 
-    private formatLogArguments(args) {
-        args = Array.prototype.slice.call(args);
-
-        var stackInfo = this.getStackInfo(1);
-
-        if (stackInfo) {
-            var calleeStr = "[" + stackInfo.file + ":" +
-                stackInfo.line + "]";
-
-            if (typeof (args[0]) === "string") {
-                args[0] = calleeStr + "\t\t" + args[0];
-            } else {
-                args.unshift(calleeStr);
-            }
-        }
-
-        return args;
+    private formatLogArguments(args: string[]) {
+        return [args.join(" ")];
     }
 }
 
