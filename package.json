@@ -16,7 +16,8 @@
     "sqlite3": "^5.1.7",
     "type": "^2.7.3",
     "typescript": "^5.8.3",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.10"

@@ -1,4 +1,5 @@
 import { createLogger, format, transports } from "winston";
+import "npm:winston-daily-rotate-file";
 import path from "node:path";
 
 const { combine, timestamp, label, printf, colorize } = format;
@@ -14,9 +15,8 @@ class Logger {
 
     constructor() {
         var date = new Date();
-        var logDir = path.join(PROJECT_ROOT, "logs");
+        var logDir = path.join(PROJECT_ROOT, "logs/");
         var logFileName = `log-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
-        var errorLogFileName = `error-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
 
         this.winstonLogger = createLogger({
             level: "info",
@@ -28,11 +28,22 @@ class Logger {
             ),
             defaultMeta: { service: "user-service" },
             transports: [
-                new transports.File({
-                    filename: "logs/" + errorLogFileName,
+                new transports.DailyRotateFile({
+                    filename: logDir + 'error-echoServer-%DATE%.log',
+                    datePattern: 'YYYY-MM-DD',
+                    zippedArchive: true,
+                    maxSize: '20m',
+                    maxFiles: '14d',
                     level: "error",
                 }),
-                new transports.File({ filename: "logs/" + logFileName }),
+                new transports.DailyRotateFile({
+                    filename: logDir + 'echoServer-%DATE%.log',
+                    datePattern: 'YYYY-MM-DD',
+                    zippedArchive: true,
+                    maxSize: '20m',
+                    maxFiles: '14d',
+                    level: "info",
+                })
             ],
         });
 
