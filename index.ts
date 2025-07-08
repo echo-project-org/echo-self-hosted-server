@@ -5,6 +5,7 @@ import cors from "npm:cors";
 import { Logger } from "./classes/Logger.ts";
 import ConfigLoader from "./classes/ConfigLoader.ts";
 import EchoDatabase from "./classes/EchoDatabase.ts";
+import rooms from "./routes/rooms.ts";
 
 const config = new ConfigLoader().getCfg();
 const db = new EchoDatabase(config.database.filename);
@@ -38,6 +39,8 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.use("/api/rooms", rooms);
 
 const httpServer = createServer(app);
 logger.info("Creating HTTP server...");
