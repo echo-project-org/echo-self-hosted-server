@@ -15,13 +15,15 @@ class Logger {
     constructor() {
         var date = new Date();
         var logDir = path.join(PROJECT_ROOT, "logs");
-        var logFileName = `log-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`; 
+        var logFileName = `log-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
         var errorLogFileName = `error-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
 
         this.winstonLogger = createLogger({
             level: "info",
             format: combine(
-                timestamp(),
+                timestamp({
+                    format: "YYYY-MM-DD HH:mm:ss"
+                }),
                 Logger.myFormat,
             ),
             defaultMeta: { service: "user-service" },
@@ -38,7 +40,7 @@ class Logger {
             this.winstonLogger.add(
                 new transports.Console({
                     format: combine(
-                        colorize({ 
+                        colorize({
                             all: true,
                             colors: {
                                 info: 'green',
@@ -77,7 +79,7 @@ class Logger {
         var stacklist = (new Error()).stack?.split("\n").slice(3);
         var stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
         var stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
-        
+
         if (!stacklist || stacklist.length === 0) {
             return null;
         }
