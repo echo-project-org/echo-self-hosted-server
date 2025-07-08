@@ -4,8 +4,10 @@ import { createServer } from "node:http";
 import cors from "npm:cors";
 import { Logger } from "./classes/Logger.ts";
 import ConfigLoader from "./classes/ConfigLoader.ts";
+import EchoDatabase from "./classes/EchoDatabase.ts";
 
 const config = new ConfigLoader().getCfg();
+const db = new EchoDatabase(config.database.filename);
 
 const logger = new Logger();
 logger.info("Starting Echo Self-Hosted Server...");
@@ -25,6 +27,14 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Expose-Headers", "Authorization");
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+
+    //add usefull properties to the request object
+    req.db = db.GetDb();
+    if(!req.db) {
+        logger.error("Database connection is not available");
+        res.status(500).send("Database connection error");
+        return;
+    }
 
     next();
 });

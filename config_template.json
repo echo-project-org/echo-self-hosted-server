@@ -1,5 +1,8 @@
 {
     "env": "dev",
     "log": "verbose",
-    "port": "6980"
+    "port": "6980",
+    "database": {
+        "filename": "data/echoDatabase.db"
+    }
 }
