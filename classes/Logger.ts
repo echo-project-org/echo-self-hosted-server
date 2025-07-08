@@ -1,7 +1,7 @@
 import { createLogger, format, transports } from "winston";
 import path from "node:path";
 
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, label, printf, colorize } = format;
 
 const PROJECT_ROOT = path.resolve(path.dirname(""));
 
@@ -38,7 +38,18 @@ class Logger {
             this.winstonLogger.add(
                 new transports.Console({
                     format: combine(
-                        timestamp(),
+                        colorize({ 
+                            all: true,
+                            colors: {
+                                info: 'green',
+                                warn: 'yellow',
+                                error: 'red',
+                                debug: 'blue'
+                            }
+                        }),
+                        timestamp({
+                            format: "YYYY-MM-DD HH:mm:ss"
+                        }),
                         Logger.myFormat,
                     ),
                 }),
@@ -46,26 +57,30 @@ class Logger {
         }
     }
 
-    public info(message: string) {
-        this.winstonLogger.info.apply(this.winstonLogger, this.formatLogArguments(arguments));
+    public info(...messages: string[]) {
+        this.winstonLogger.info.apply(this.winstonLogger, this.formatLogArguments(messages));
     }
 
-    public warn(message: string) {
-        this.winstonLogger.warn.apply(this.winstonLogger, this.formatLogArguments(arguments));
+    public warn(...messages: string[]) {
+        this.winstonLogger.warn.apply(this.winstonLogger, this.formatLogArguments(messages));
     }
 
-    public error(message: string) {
-        this.winstonLogger.error.apply(this.winstonLogger, this.formatLogArguments(arguments));
+    public error(...messages: string[]) {
+        this.winstonLogger.error.apply(this.winstonLogger, this.formatLogArguments(messages));
     }
 
-    public debug(message: string) {
-        this.winstonLogger.debug.apply(this.winstonLogger, this.formatLogArguments(arguments));
+    public debug(...messages: string[]) {
+        this.winstonLogger.debug.apply(this.winstonLogger, this.formatLogArguments(messages));
     }
 
     private getStackInfo(stackIndex) {
-        var stacklist = (new Error()).stack.split("\n").slice(3);
+        var stacklist = (new Error()).stack?.split("\n").slice(3);
         var stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
         var stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
+        
+        if (!stacklist || stacklist.length === 0) {
+            return null;
+        }
 
         var s = stacklist[stackIndex] || stacklist[0];
         var sp = stackReg.exec(s) || stackReg2.exec(s);
