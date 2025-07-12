@@ -2,7 +2,8 @@ import { Socket, Server as SocketIoServer } from 'socket.io';
 import { Server } from 'node:http';
 import { Logger } from '../classes/Logger.ts';
 import { Namespace } from 'socket.io';
-import SocketConnection from './SocketConnection.ts';
+import User from './User.ts';
+import { AppData, DtlsParameters, RtpCapabilities, RtpParameters } from 'mediasoup/types';
 
 /**
  * WebSocket wrapper class for managing Socket.IO connections.
@@ -14,11 +15,11 @@ class WsWrapper {
     //#endregion
     //#region Instance Properties
     private io: SocketIoServer;
-    private connectedClients: Map<string, SocketConnection>;
+    private connectedClients: Map<string, User>;
     private logger: Logger;
     private roomsNamespace: Namespace
     //#endregion
-    
+
     /**
      * Initializes the WebSocket server.
      * @param httpServer - The HTTP server to attach the WebSocket server to.
@@ -27,7 +28,7 @@ class WsWrapper {
     public constructor(httpServer: Server, config: any) {
         WsWrapper.config = config;
         this.logger = new Logger();
-        this.connectedClients = new Map<string, SocketConnection>();
+        this.connectedClients = new Map<string, User>();
 
         this.logger.info("Initializing SocketIO server...");
         this.io = new SocketIoServer(httpServer);
@@ -85,7 +86,7 @@ class WsWrapper {
         this.logger.info(`New connection from ${address} - Socket ID: ${socket.id}`);
 
         const userId: string = "ciao";
-        let connection = new SocketConnection(socket);
+        let connection = new User(socket);
 
         this.connectedClients.set(userId, connection);
     }
@@ -105,7 +106,38 @@ class WsWrapper {
         this.logger.info(`New connection to room ${newNamespace.name} from ${address} - Socket ID: ${socket.id}`);
 
         // broadcast to all clients in the given sub-namespace
-        newNamespace.emit("UserJoined", "ciaone");
+        newNamespace.emit("server.userJoinedYourChannel", newNamespace.name);
+
+        //breadcast to all clients in the main namespace except the current one
+        this.io.sockets.except(newNamespace.name).emit("server.userJoinedChannel", newNamespace.name);
+
+        this.io.on("client.audioState", (muted: Boolean, deaf: Boolean) => {
+
+        });
+
+        this.io.on("client.sendTransportConnect", (dtlsParams: DtlsParameters) => {
+
+        });
+
+        this.io.on("client.sendTransportProduce", (id: string, kind: string, rtpParameters: RtpParameters, appdata: AppData) => {
+
+        });
+
+        this.io.on("client.receiveTransportConnect", (dtlsParams: DtlsParameters) => {
+
+        });
+
+        this.io.on("client.subscribe", (producerId: string, rpcCap: RtpCapabilities) => {
+
+        });
+
+        this.io.on("client.resumeStream", (producerId: string) => {
+
+        });
+
+        this.io.on("client.unsubscribe", (producerId: string) => {
+
+        });
     }
 }
 
