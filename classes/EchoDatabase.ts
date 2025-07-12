@@ -42,9 +42,9 @@ class EchoDatabase {
             this.logger.info("Creating database tables...");
             this.logger.info("Initializing users table");
             this.db.exec(`CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                hashedIdentity TEXT NOT NULL UNIQUE,
-                username TEXT NOT NULL DEFAULT 'Anonymous',
+                id TEXT PRIMARY KEY,
+                publicKey TEXT NOT NULL UNIQUE,
+                username TEXT NOT NULL DEFAULT 'Echo User',
                 lastIP TEXT NOT NULL DEFAULT '0.0.0.0',
                 lastLogin INTEGER NOT NULL DEFAULT current_timestamp,
                 firstLogin INTEGER NOT NULL DEFAULT current_timestamp,
