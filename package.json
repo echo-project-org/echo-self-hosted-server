@@ -13,6 +13,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "mediasoup": "^3.16.6",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7",
     "type": "^2.7.3",
     "typescript": "^5.8.3",
