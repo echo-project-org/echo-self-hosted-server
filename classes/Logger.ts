@@ -19,7 +19,7 @@ class Logger {
         var logFileName = `log-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.log`;
 
         this.winstonLogger = createLogger({
-            level: "info",
+            level: "debug",
             format: combine(
                 timestamp({
                     format: "YYYY-MM-DD HH:mm:ss"
