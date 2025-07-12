@@ -6,6 +6,7 @@ import { Logger } from "./classes/Logger.ts";
 import ConfigLoader from "./classes/ConfigLoader.ts";
 import EchoDatabase from "./classes/EchoDatabase.ts";
 import rooms from "./routes/rooms.ts";
+import WsWrapper from "./mediasoup/WsWrapper.ts";
 
 const config = new ConfigLoader().getCfg();
 const db = new EchoDatabase(config.database.filename);
@@ -29,6 +30,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 
+    //TODO add authentication middleware here
+
     //add usefull properties to the request object
     req.db = db.GetDb();
     if(!req.db) {
@@ -48,5 +51,8 @@ logger.info("Creating HTTP server...");
 httpServer.listen(config.port, () => {
     logger.info(`HTTP Server is running on port ${config.port}`);
 });
+
+const wsWrapper = new WsWrapper(httpServer, config);
+wsWrapper.Init();
 
 
